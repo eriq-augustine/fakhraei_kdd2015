@@ -21,10 +21,7 @@ for testFold in `seq 1 $totalFolds`; do
     fi
 
     # Running the model
-    java -Xms2G -Xmx4G -cp ./target/classes:`cat classpath.out` fakhraei_kdd2015.SpamModel $subModel $totalFolds $testFold $validationFold 'data/'
+    java -Xms4G -Xmx8G -cp ./target/classes:`cat classpath.out` fakhraei_kdd2015.SpamModel $subModel $totalFolds $testFold $validationFold 'data/'
     
     echo "*** Fold $testFold Done! ***"
 done
- 
- 
-

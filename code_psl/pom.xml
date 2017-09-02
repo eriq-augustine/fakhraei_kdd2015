@@ -7,9 +7,19 @@
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>edu.umd.cs</groupId>
+			<groupId>org.linqs</groupId>
 			<artifactId>psl-groovy</artifactId>
-			<version>1.2.1</version>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.linqs</groupId>
+			<artifactId>psl-evaluation</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.linqs</groupId>
+			<artifactId>psl-dataloading</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	<properties>
@@ -24,7 +34,7 @@
 			</releases>
 			<id>psl-releases</id>
 			<name>PSL Releases</name>
-			<url>https://scm.umiacs.umd.edu/maven/lccd/content/repositories/psl-releases/</url>
+			<url>http://maven.linqs.org/maven/repositories/psl-releases/</url>
 			<layout>default</layout>
 		</repository>
 		<repository>
@@ -35,7 +45,7 @@
 			</releases>
 			<id>psl-thirdparty</id>
 			<name>PSL Third Party</name>
-			<url>https://scm.umiacs.umd.edu/maven/lccd/content/repositories/psl-thirdparty/</url>
+			<url>http://maven.linqs.org/maven/repositories/psl-thirdparty/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
