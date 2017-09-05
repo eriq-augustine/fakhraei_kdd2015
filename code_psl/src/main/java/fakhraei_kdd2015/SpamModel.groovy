@@ -1,30 +1,31 @@
 package fakhraei_kdd2015;
 
-import org.linqs.psl.application.inference.MPEInference
-import org.linqs.psl.application.inference.result.FullInferenceResult;
-import org.linqs.psl.application.learning.weight.em.HardEM
-import org.linqs.psl.application.learning.weight.maxlikelihood.MaxLikelihoodMPE
-import org.linqs.psl.config.*
-import org.linqs.psl.core.*
-import org.linqs.psl.core.inference.*
-import org.linqs.psl.database.DataStore
-import org.linqs.psl.database.Database
-import org.linqs.psl.database.DatabasePopulator
-import org.linqs.psl.database.Partition
-import org.linqs.psl.database.rdbms.RDBMSDataStore
-import org.linqs.psl.database.rdbms.driver.H2DatabaseDriver
-import org.linqs.psl.database.rdbms.driver.H2DatabaseDriver.Type
-import org.linqs.psl.groovy.*
-import org.linqs.psl.model.atom.QueryAtom
-import org.linqs.psl.model.predicate.Predicate
-import org.linqs.psl.model.term.ConstantType;
-import org.linqs.psl.model.atom.*
-import org.linqs.psl.ui.loading.*
-import org.linqs.psl.util.database.*
-import org.linqs.psl.utils.dataloading.InserterUtils;
-import org.linqs.psl.utils.evaluation.result.*
-import org.linqs.psl.utils.evaluation.statistics.RankingScore
-import org.linqs.psl.utils.evaluation.statistics.SimpleRankingComparator
+import edu.umd.cs.psl.application.inference.MPEInference
+import edu.umd.cs.psl.application.learning.weight.maxlikelihood.MaxLikelihoodMPE
+import edu.umd.cs.psl.config.*
+import edu.umd.cs.psl.core.*
+import edu.umd.cs.psl.core.inference.*
+import edu.umd.cs.psl.database.DataStore
+import edu.umd.cs.psl.database.Database
+import edu.umd.cs.psl.database.DatabasePopulator
+import edu.umd.cs.psl.database.Partition
+import edu.umd.cs.psl.database.rdbms.RDBMSDataStore
+import edu.umd.cs.psl.database.rdbms.driver.H2DatabaseDriver
+import edu.umd.cs.psl.database.rdbms.driver.H2DatabaseDriver.Type
+import edu.umd.cs.psl.evaluation.result.*
+import edu.umd.cs.psl.evaluation.statistics.RankingScore
+import edu.umd.cs.psl.evaluation.statistics.SimpleRankingComparator
+import edu.umd.cs.psl.groovy.*
+import edu.umd.cs.psl.model.argument.ArgumentType
+import edu.umd.cs.psl.model.argument.GroundTerm
+import edu.umd.cs.psl.model.argument.Variable
+import edu.umd.cs.psl.model.atom.QueryAtom
+import edu.umd.cs.psl.model.parameters.PositiveWeight
+import edu.umd.cs.psl.model.predicate.Predicate
+import edu.umd.cs.psl.ui.loading.*
+import edu.umd.cs.psl.util.database.*
+import edu.umd.cs.psl.model.atom.*
+import edu.umd.cs.psl.application.learning.weight.em.HardEM
 
 // Checking the arguments
 if (args.length!=5){
@@ -64,10 +65,10 @@ DataStore data = new RDBMSDataStore(new H2DatabaseDriver(Type.Memory, dbpath, tr
 PSLModel m = new PSLModel(this,data)
 
 // Defining Predicates
-m.add predicate: "spammer",	types: [ConstantType.UniqueID]
-m.add predicate: "prior_credible",	types: [ConstantType.UniqueID]
-m.add predicate: "credible",	types: [ConstantType.UniqueID]
-m.add predicate: "report",	types: [ConstantType.UniqueID , ConstantType.UniqueID]
+m.add predicate: "spammer",	types: [ArgumentType.UniqueID]
+m.add predicate: "prior_credible",	types: [ArgumentType.UniqueID]
+m.add predicate: "credible",	types: [ArgumentType.UniqueID]
+m.add predicate: "report",	types: [ArgumentType.UniqueID , ArgumentType.UniqueID]
 
 // Adding rules
 if (model == 1)
@@ -99,13 +100,14 @@ else if (model == 3)
 System.out.println m;
 
 // Creating the partition to read the data
-Partition read_pt = data.getPartition("read");
-Partition write_pt = data.getPartition("write");
-Partition labels_pt = data.getPartition("labels");
+Partition read_pt =  new Partition(1);
+Partition write_pt = new Partition(2);
+Partition labels_pt = new Partition(3);
 
-Partition read_wl_pt = data.getPartition("wl_read");
-Partition write_wl_pt = data.getPartition("wl_write");
-Partition labels_wl_pt = data.getPartition("wl_labels");
+Partition read_wl_pt =  new Partition(4);
+Partition write_wl_pt = new Partition(5);
+Partition labels_wl_pt = new Partition(6);
+
 
 // Reading from file
 	System.out.println "Loading spammer ...";
@@ -215,7 +217,7 @@ System.out.println("-------------------\n");
 System.out.println("Evaluting ...");
 
 def labels_db = data.getDatabase(labels_pt, closedPredicates)
-Database predictions_db = data.getDatabase(data.getPartition("100"), write_pt)
+Database predictions_db = data.getDatabase(new Partition(100), write_pt)
 
 def comparator = new SimpleRankingComparator(predictions_db)
 comparator.setBaseline(labels_db)
@@ -237,3 +239,5 @@ try {
 catch (ArrayIndexOutOfBoundsException e) {
 	System.out.println("No evaluation data! Terminating!");
 }
+
+
